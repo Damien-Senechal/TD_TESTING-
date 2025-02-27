@@ -136,3 +136,30 @@ def update_product(product_id):
     db.session.commit()
     
     return jsonify(product.to_dict()), 200
+
+@product_routes.route("/products/<int:product_id>", methods=["DELETE"])
+def delete_product(product_id):
+    """
+    Delete a product by ID
+    ---
+    parameters:
+      - name: product_id
+        in: path
+        type: integer
+        required: true
+        description: ID of the product to delete
+    responses:
+      200:
+        description: Product deleted successfully
+      404:
+        description: Product not found
+    """
+    product = Product.query.get(product_id)
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
+    # Delete from database
+    db.session.delete(product)
+    db.session.commit()
+    
+    return jsonify({"message": "Product deleted successfully"}), 200
