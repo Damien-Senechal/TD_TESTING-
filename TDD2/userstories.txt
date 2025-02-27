@@ -1,0 +1,30 @@
+User story 1 - Récupérer tous les produits (GET /products)
+En tant qu'utilisateur,
+Je veux voir une liste de tous les produits disponibles,
+Afin de pouvoir consulter le catalogue complet.
+
+Critères d'acceptation:
+- Le système récupère une liste de tous les produits depuis la base de données.
+- La réponse inclut les détails essentiels des produits (ID, nom, description, prix).
+- S'il n'y a pas de produits, le système renvoie une liste vide.
+
+User story 2 - Récupérer un produit par ID (GET /products/:id)
+En tant qu'utilisateur,
+Je veux consulter les informations détaillées d'un produit spécifique,
+Afin de pouvoir voir toutes ses caractéristiques.
+
+Critères d'acceptation:
+- Le système récupère les détails d'un produit sur la base de l'ID fourni.
+- La réponse inclut tous les détails du produit (ID, nom, description, prix).
+- Si l'ID du produit n'existe pas, le système renvoie une erreur 404 avec un message explicatif.
+
+User story 3 - Créer un nouveau produit (POST /products)
+En tant qu'administrateur,
+Je veux créer un nouveau produit,
+Afin de pouvoir l'ajouter au catalogue avec toutes les informations nécessaires.
+
+Critères d'acceptation:
+- Une requête valide contient les informations du produit (nom, description, prix).
+- Le système crée un nouveau produit et le stocke dans la base de données.
+- Si les données saisies sont invalides (champs requis manquants), le système renvoie une erreur 400 avec un retour sur la validation.
+- Après la création, le système répond avec les détails du nouveau produit créé.
