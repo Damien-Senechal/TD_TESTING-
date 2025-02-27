@@ -17,3 +17,14 @@ Critères d'acceptation:
 - Le système récupère les détails d'un produit sur la base de l'ID fourni.
 - La réponse inclut tous les détails du produit (ID, nom, description, prix).
 - Si l'ID du produit n'existe pas, le système renvoie une erreur 404 avec un message explicatif.
+
+User story 3 - Créer un nouveau produit (POST /products)
+En tant qu'administrateur,
+Je veux créer un nouveau produit,
+Afin de pouvoir l'ajouter au catalogue avec toutes les informations nécessaires.
+
+Critères d'acceptation:
+- Une requête valide contient les informations du produit (nom, description, prix).
+- Le système crée un nouveau produit et le stocke dans la base de données.
+- Si les données saisies sont invalides (champs requis manquants), le système renvoie une erreur 400 avec un retour sur la validation.
+- Après la création, le système répond avec les détails du nouveau produit créé.
