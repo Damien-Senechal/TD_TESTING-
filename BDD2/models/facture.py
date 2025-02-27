@@ -1,0 +1,19 @@
+from models.database import db
+
+class Facture(db.Model):
+    __tablename__ = "factures"
+    
+    id = db.Column(db.Integer, primary_key=True)
+    nom_client = db.Column(db.String(100), nullable=False)
+    montant = db.Column(db.Float, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    status = db.Column(db.String(100), nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "nom_client": self.nom_client,
+            "montant": self.montant,
+            "date": self.date,
+            "status": self.status
+        }
