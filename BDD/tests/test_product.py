@@ -147,6 +147,34 @@ class ProductTestCase(unittest.TestCase):
         response = self.client.put("/api/products/999", json=update_data)
         self.assertEqual(response.status_code, 404)
         self.assertIn("error", response.json)
+        
+    def test_delete_product_valid(self):
+        """Test deleting a product that exists"""
+        # First, add a product to the database
+        with self.app.app_context():
+            product = Product(name="Product to Delete", description="This product will be deleted", price=19.99)
+            db.session.add(product)
+            db.session.commit()
+            product_id = product.id
+        
+        # Delete the product
+        response = self.client.delete(f"/api/products/{product_id}")
+        self.assertEqual(response.status_code, 200)
+        
+        # Verify response contains confirmation message
+        self.assertIn("message", response.json)
+        self.assertIn("deleted", response.json["message"].lower())
+        
+        # Verify product was deleted from the database
+        with self.app.app_context():
+            deleted_product = Product.query.get(product_id)
+            self.assertIsNone(deleted_product)
+    
+    def test_delete_product_not_found(self):
+        """Test deleting a product that doesn't exist"""
+        response = self.client.delete("/api/products/999")
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("error", response.json)
 
 if __name__ == "__main__":
     unittest.main()
