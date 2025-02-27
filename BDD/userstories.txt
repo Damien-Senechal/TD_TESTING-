@@ -1,0 +1,9 @@
+User story 1 - Récupérer tous les produits (GET /products)
+En tant qu'utilisateur,
+Je veux voir une liste de tous les produits disponibles,
+Afin de pouvoir consulter le catalogue complet.
+
+Critères d'acceptation:
+- Le système récupère une liste de tous les produits depuis la base de données.
+- La réponse inclut les détails essentiels des produits (ID, nom, description, prix).
+- S'il n'y a pas de produits, le système renvoie une liste vide.
