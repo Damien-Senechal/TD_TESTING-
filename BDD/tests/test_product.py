@@ -107,6 +107,46 @@ class ProductTestCase(unittest.TestCase):
         response = self.client.post("/api/products", json=product_data)
         self.assertEqual(response.status_code, 400)
         self.assertIn("error", response.json)
+        
+    def test_update_product_valid(self):
+        """Test updating a product with valid data"""
+        # First, add a product to the database
+        with self.app.app_context():
+            product = Product(name="Original Product", description="Original description", price=19.99)
+            db.session.add(product)
+            db.session.commit()
+            product_id = product.id
+        
+        # Update the product
+        update_data = {
+            "name": "Updated Product",
+            "price": 29.99
+        }
+        response = self.client.put(f"/api/products/{product_id}", json=update_data)
+        self.assertEqual(response.status_code, 200)
+        
+        # Verify response contains updated data
+        self.assertEqual(response.json["name"], "Updated Product")
+        self.assertEqual(response.json["price"], 29.99)
+        # Description should remain unchanged
+        self.assertEqual(response.json["description"], "Original description")
+        
+        # Verify product was updated in the database
+        with self.app.app_context():
+            updated_product = Product.query.get(product_id)
+            self.assertEqual(updated_product.name, "Updated Product")
+            self.assertEqual(updated_product.price, 29.99)
+            self.assertEqual(updated_product.description, "Original description")
+    
+    def test_update_product_not_found(self):
+        """Test updating a product that doesn't exist"""
+        update_data = {
+            "name": "Updated Nonexistent Product",
+            "price": 39.99
+        }
+        response = self.client.put("/api/products/999", json=update_data)
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("error", response.json)
 
 if __name__ == "__main__":
     unittest.main()
