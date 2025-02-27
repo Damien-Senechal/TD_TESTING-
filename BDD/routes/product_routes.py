@@ -86,3 +86,53 @@ def create_product():
     db.session.commit()
     
     return jsonify(new_product.to_dict()), 201
+
+@product_routes.route("/products/<int:product_id>", methods=["PUT"])
+def update_product(product_id):
+    """
+    Update a product by ID
+    ---
+    parameters:
+      - name: product_id
+        in: path
+        type: integer
+        required: true
+        description: ID of the product to update
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            price:
+              type: number
+    responses:
+      200:
+        description: Product updated successfully
+      404:
+        description: Product not found
+      400:
+        description: Invalid input
+    """
+    product = Product.query.get(product_id)
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
+    data = request.get_json()
+    
+    # Update product fields if provided
+    if "name" in data:
+        product.name = data["name"]
+    if "description" in data:
+        product.description = data["description"]
+    if "price" in data:
+        product.price = float(data["price"])
+    
+    # Save to database
+    db.session.commit()
+    
+    return jsonify(product.to_dict()), 200
