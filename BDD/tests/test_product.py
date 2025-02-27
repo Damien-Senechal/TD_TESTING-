@@ -66,6 +66,47 @@ class ProductTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertIn("error", response.json)
         self.assertEqual(response.json["error"], "Product not found")
+        
+    def test_create_product_valid(self):
+        """Test creating a product with valid data"""
+        product_data = {
+            "name": "New Product",
+            "description": "This is a new product",
+            "price": 29.99
+        }
+        response = self.client.post("/api/products", json=product_data)
+        self.assertEqual(response.status_code, 201)
+        
+        # Verify response contains the created product
+        self.assertEqual(response.json["name"], "New Product")
+        self.assertEqual(response.json["description"], "This is a new product")
+        self.assertEqual(response.json["price"], 29.99)
+        
+        # Verify product was added to the database
+        with self.app.app_context():
+            product = Product.query.filter_by(name="New Product").first()
+            self.assertIsNotNone(product)
+            self.assertEqual(product.price, 29.99)
+            
+    def test_create_product_missing_fields(self):
+        """Test creating a product with missing required fields"""
+        # Missing name
+        product_data = {
+            "description": "Missing name product",
+            "price": 19.99
+        }
+        response = self.client.post("/api/products", json=product_data)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("error", response.json)
+        
+        # Missing price
+        product_data = {
+            "name": "Missing Price Product",
+            "description": "This product has no price"
+        }
+        response = self.client.post("/api/products", json=product_data)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("error", response.json)
 
 if __name__ == "__main__":
     unittest.main()
