@@ -40,3 +40,14 @@ Critères d'acceptation:
 - Si l'ID du produit n'existe pas, le système renvoie une erreur 404.
 - Si les données saisies sont invalides, le système renvoie une erreur 400 avec un retour sur la validation.
 - Les détails mis à jour du produit sont reflétés dans la base de données.
+
+User Story 5 - Supprimer un produit (DELETE /products/:id)
+En tant qu'administrateur,
+Je veux supprimer un produit du catalogue,
+Afin de retirer les produits qui ne sont plus disponibles.
+
+Critères d'acceptation:
+- Le système supprime le produit associé à l'ID fourni.
+- Si l'ID du produit n'existe pas, le système renvoie une erreur 404.
+- Si la suppression est réussie, le système répond avec un message de confirmation.
+- Le produit supprimé n'est plus récupérable dans la base de données.
