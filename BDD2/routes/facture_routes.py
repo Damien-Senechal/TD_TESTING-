@@ -11,7 +11,6 @@ def get_products():
     ---
     responses:
       200: description: De toutes les factures dans la base de données
-      404: description: Aucune facture n'est dans la base de données
     """
     facture = Facture.query.all()
     return jsonify([product.to_dict() for product in facture]), 200

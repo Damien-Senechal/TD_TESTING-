@@ -1,4 +1,6 @@
 from models.database import db
+from sqlalchemy import Date
+
 
 class Facture(db.Model):
     __tablename__ = "factures"
