@@ -5,5 +5,16 @@ Afin de pouvoir consulter le catalogue complet.
 
 Critères d'acceptation:
 - Le système récupère une liste de toutes les factures depuis la base de données.
-- La réponse inclut les détails essentiels des produits (ID, description, prix).
-- S'il n'y a pas de produits, le système renvoie une liste vide.
+- La réponse inclut les détails essentiels des factures (ID, description etc..).
+- S'il n'y a pas de facture, le système renvoie une liste vide.
+
+
+User story 2 - Récupérer une facture par ID (GET /factures/:id)
+En tant qu'utilisateur,
+Je veux consulter les informations détaillées d'une facture spécifique,
+Afin de pouvoir voir toutes ses caractéristiques.
+
+Critères d'acceptation:
+- Le système récupère les détails d'une facture sur la base de l'ID fourni.
+- La réponse inclut tous les détails de facture (ID, nom, description, prix).
+- Si l'ID du produit n'existe pas, le système renvoie une erreur 404 avec un message explicatif.
