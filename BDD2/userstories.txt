@@ -5,7 +5,7 @@ Afin de pouvoir consulter le catalogue complet.
 
 Critères d'acceptation:
 - Le système récupère une liste de toutes les factures depuis la base de données.
-- La réponse inclut les détails essentiels des factures (ID, description etc..).
+- La réponse inclut les détails essentiels des factures (nom_client, montant, date, status).
 - S'il n'y a pas de facture, le système renvoie une liste vide.
 
 
@@ -16,7 +16,7 @@ Afin de pouvoir voir toutes ses caractéristiques.
 
 Critères d'acceptation:
 - Le système récupère les détails d'une facture sur la base de l'ID fourni.
-- La réponse inclut tous les détails de facture (ID, nom, description, prix).
+- La réponse inclut tous les détails de facture (nom_client, montant, date, status).
 - Si l'ID du produit n'existe pas, le système renvoie une erreur 404 avec un message explicatif.
 
 
@@ -26,7 +26,7 @@ Je veux enregistrer une nouvelle facture
 Afin de garder une trace des paiements clients.
 
 Critères d'acceptation:
-- Une requête valide contient les informations d'une facture (nom, description, etc).
+- Une requête valide contient les informations d'une facture (nom_client, montant, date, status).
 - Le système crée une nouvelle facture dans la base de données.
 - Si les données saisies sont invalides (champs requis manquants), le système renvoie une erreur 400 avec un retour sur la validation.
 - Après la création, le système répond avec les détails du nouveau facture créé.
@@ -41,3 +41,13 @@ Critères d'acceptation:
 - Peut modifier nom_client, montant, date, status
 - Erreur 404 si fourni non trouvé
 - Retourne les détails mis à jour
+
+User Story 5: Supprimer un facture
+En tant qu'utilisateur
+Je veux retirer une facture
+Afin de maintenir un inventaire de facture précis
+
+Critères d'acceptation:
+- Suppression via l'ID
+- Erreur 404 si non trouvé
+- Message de confirmation après suppression
