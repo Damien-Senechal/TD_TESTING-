@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify
 from models.database import db
 from models.facture import Facture
+from sqlalchemy.orm import Session
 
 facture_routes = Blueprint("facture_routes", __name__)
 
@@ -32,7 +33,11 @@ def get_facture(facture_id):
       404:
         description: Facture not found
     """
-    facture = Facture.query.get(facture_id)
+    
+
+
+    session: Session = db.session 
+    facture = session.get(Facture, facture_id)
     if facture:
         return jsonify(facture.to_dict()), 200
     return jsonify({"error": "Facture not found"}), 404
