@@ -70,3 +70,26 @@ def create_facture():
         "date": new_facture.date,
         "status": new_facture.status
     }), 201
+
+@facture_routes.route("/factures/<int:facture_id>", methods=["PUT"])
+def update_facture(facture_id):
+    """Update a facture by ID."""
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid input"}), 400
+
+    session: Session = db.session
+    facture = session.get(Facture, facture_id)
+
+    if facture:
+        facture.nom_client = data["nom_client"]
+        facture.montant = data["montant"]
+        facture.date = data["date"]
+        facture.status = data["status"]
+
+        session.commit()
+
+        return jsonify(facture.to_dict()), 200
+
+    return jsonify({"error": "Facture not found"}), 404
