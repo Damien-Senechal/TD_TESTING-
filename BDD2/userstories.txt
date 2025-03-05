@@ -21,12 +21,23 @@ Critères d'acceptation:
 
 
 User Story 3 : Ajouter une facture
-En tant que comptable,
+En tant qu'utilisateur,
 Je veux enregistrer une nouvelle facture
 Afin de garder une trace des paiements clients.
 
 Critères d'acceptation:
 - Une requête valide contient les informations d'une facture (nom, description, etc).
-- Le système crée une nouvelle facture et le stocke dans la base de données.
+- Le système crée une nouvelle facture dans la base de données.
 - Si les données saisies sont invalides (champs requis manquants), le système renvoie une erreur 400 avec un retour sur la validation.
 - Après la création, le système répond avec les détails du nouveau facture créé.
+
+User Story 4: Modifier une facture
+En tant qu'utilisateur,
+Je veux mettre à jour les informations d'une facture
+Afin de corriger ou ajuster une facture
+
+Critères d'acceptation:
+- Mise à jour via l'ID fourni
+- Peut modifier nom_client, montant, date, status
+- Erreur 404 si fourni non trouvé
+- Retourne les détails mis à jour
