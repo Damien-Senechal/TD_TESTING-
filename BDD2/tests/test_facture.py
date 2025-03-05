@@ -92,3 +92,27 @@ class FactureTestCase(unittest.TestCase):
 
         
 
+    def test_update_facture(self):
+        """Test pour mettre à jour une facture"""
+        with self.app.app_context():
+            facture = Facture(
+                nom_client="Client D",
+                montant=300.00,
+                date=datetime.strptime("2023-06-01", "%Y-%m-%d").date(),
+                status="En attente"
+            )
+            db.session.add(facture)
+            db.session.commit()
+            facture_id = facture.id
+
+        updated_facture = {
+            "nom_client": "Client D",
+            "montant": 400.00,
+            "date": "2023-06-01",
+            "status": "Validée"
+        }
+        response = self.client.put(f"/api/factures/{facture_id}", json=updated_facture)
+        self.assertEqual(response.status_code, 200)
+        response_data = response.get_json()
+        self.assertEqual(response_data["montant"], 400.00)
+        self.assertEqual(response_data["status"], "Validée")
