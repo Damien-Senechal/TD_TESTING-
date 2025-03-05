@@ -99,10 +99,10 @@ def delete_facture(facture_id):
     """Delete a facture by ID."""
     session: Session = db.session
     facture = session.get(Facture, facture_id)
-
+    
     if facture:
         session.delete(facture)
         session.commit()
-        return jsonify({"message": "Facture deleted"}), 200
+        return jsonify({"message": "Facture deleted"}), 204
 
     return jsonify({"error": "Facture not found"}), 404

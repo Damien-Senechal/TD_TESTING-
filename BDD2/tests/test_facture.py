@@ -116,3 +116,22 @@ class FactureTestCase(unittest.TestCase):
         response_data = response.get_json()
         self.assertEqual(response_data["montant"], 400.00)
         self.assertEqual(response_data["status"], "Validée")
+
+    def test_delete_facture(self):
+        """Test pour supprimer une facture"""
+        with self.app.app_context():
+            facture = Facture(
+                nom_client="Client E",
+                montant=500.00,
+                date=datetime.strptime("2023-06-01", "%Y-%m-%d").date(),
+                status="En attente"
+            )
+            db.session.add(facture)
+            db.session.commit()
+            facture_id = facture.id
+
+        response = self.client.delete(f"/api/factures/{facture_id}")
+        self.assertEqual(response.status_code, 204)
+
+        response = self.client.get(f"/api/factures/{facture_id}")
+        self.assertEqual(response.status_code, 404)
