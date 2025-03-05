@@ -45,23 +45,28 @@ def get_facture(facture_id):
         return jsonify(facture.to_dict()), 200
     return jsonify({"error": "Facture not found"}), 404
 
-@facture_routes.route("/api/factures", methods=["POST"])
+@facture_routes.route("/factures", methods=["POST"])
 def create_facture():
+    """Endpoint to create a new facture."""
     data = request.get_json()
 
-    
-    if not all(k in data for k in ("nom_client", "montant", "date", "status")):
-        return jsonify({"error": "Données incomplètes"}), 400
+    if not data:
+        return jsonify({"error": "Invalid input"}), 400
 
-    try:
-        nouvelle_facture = Facture(
-            nom_client=data["nom_client"],
-            montant=float(data["montant"]),
-            date=datetime.strptime(data["date"], "%Y-%m-%d").date(),
-            status=data["status"]
-        )
-        db.session.add(nouvelle_facture)
-        db.session.commit()
-        return jsonify(nouvelle_facture.to_dict()), 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    new_facture = Facture(
+        nom_client=data["nom_client"],
+        montant=data["montant"],
+        date=data["date"],
+        status=data["status"]
+    )
+
+    db.session.add(new_facture)
+    db.session.commit()
+
+    return jsonify({
+        "id": new_facture.id,
+        "nom_client": new_facture.nom_client,
+        "montant": new_facture.montant,
+        "date": new_facture.date,
+        "status": new_facture.status
+    }), 201
