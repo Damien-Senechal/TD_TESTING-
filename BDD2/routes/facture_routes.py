@@ -93,3 +93,16 @@ def update_facture(facture_id):
         return jsonify(facture.to_dict()), 200
 
     return jsonify({"error": "Facture not found"}), 404
+
+@facture_routes.route("/factures/<int:facture_id>", methods=["DELETE"])
+def delete_facture(facture_id):
+    """Delete a facture by ID."""
+    session: Session = db.session
+    facture = session.get(Facture, facture_id)
+
+    if facture:
+        session.delete(facture)
+        session.commit()
+        return jsonify({"message": "Facture deleted"}), 200
+
+    return jsonify({"error": "Facture not found"}), 404
