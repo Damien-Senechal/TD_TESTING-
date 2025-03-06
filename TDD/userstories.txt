@@ -29,3 +29,15 @@ Critères d'acceptation:
 - La date de la commande est automatiquement définie à la date actuelle.
 - Si les données saisies sont invalides (champs requis manquants), le système renvoie une erreur 400 avec un retour sur la validation.
 - Après la création, le système répond avec les détails de la nouvelle commande créée.
+
+US4 - Mettre à jour une commande (PUT /orders/:id)
+En tant qu'utilisateur,
+Je veux mettre à jour les informations d'une commande existante,
+Afin de corriger des erreurs ou de refléter des changements dans le statut.
+
+Critères d'acceptation:
+- Le système met à jour la commande sur la base de l'ID fourni et du corps de la requête.
+- Une requête valide contient uniquement les champs à mettre à jour (client, montant, statut).
+- Si l'ID de la commande n'existe pas, le système renvoie une erreur 404.
+- Si les données saisies sont invalides, le système renvoie une erreur 400 avec un retour sur la validation.
+- Les détails mis à jour de la commande sont reflétés dans la base de données.
