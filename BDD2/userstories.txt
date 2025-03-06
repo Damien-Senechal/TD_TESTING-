@@ -1,0 +1,53 @@
+User story 1 - Récupérer toutes les factures (GET /products)
+En tant qu'utilisateur,
+Je veux voir une liste de toutes les factures disponibles,
+Afin de pouvoir consulter le catalogue complet.
+
+Critères d'acceptation:
+- Le système récupère une liste de toutes les factures depuis la base de données.
+- La réponse inclut les détails essentiels des factures (nom_client, montant, date, status).
+- S'il n'y a pas de facture, le système renvoie une liste vide.
+
+
+User story 2 - Récupérer une facture par ID (GET /factures/:id)
+En tant qu'utilisateur,
+Je veux consulter les informations détaillées d'une facture spécifique,
+Afin de pouvoir voir toutes ses caractéristiques.
+
+Critères d'acceptation:
+- Le système récupère les détails d'une facture sur la base de l'ID fourni.
+- La réponse inclut tous les détails de facture (nom_client, montant, date, status).
+- Si l'ID du produit n'existe pas, le système renvoie une erreur 404 avec un message explicatif.
+
+
+User Story 3 : Ajouter une facture
+En tant qu'utilisateur,
+Je veux enregistrer une nouvelle facture
+Afin de garder une trace des paiements clients.
+
+Critères d'acceptation:
+- Une requête valide contient les informations d'une facture (nom_client, montant, date, status).
+- Le système crée une nouvelle facture dans la base de données.
+- Si les données saisies sont invalides (champs requis manquants), le système renvoie une erreur 400 avec un retour sur la validation.
+- Après la création, le système répond avec les détails du nouveau facture créé.
+
+User Story 4: Modifier une facture
+En tant qu'utilisateur,
+Je veux mettre à jour les informations d'une facture
+Afin de corriger ou ajuster une facture
+
+Critères d'acceptation:
+- Mise à jour via l'ID fourni
+- Peut modifier nom_client, montant, date, status
+- Erreur 404 si fourni non trouvé
+- Retourne les détails mis à jour
+
+User Story 5: Supprimer un facture
+En tant qu'utilisateur
+Je veux retirer une facture
+Afin de maintenir un inventaire de facture précis
+
+Critères d'acceptation:
+- Suppression via l'ID
+- Erreur 404 si non trouvé
+- Message de confirmation après suppression
