@@ -17,3 +17,15 @@ Critères d'acceptation:
 - Le système récupère les détails d'une commande sur la base de l'ID fourni.
 - La réponse inclut tous les détails de la commande (ID, date, montant total, statut, client).
 - Si l'ID de la commande n'existe pas, le système renvoie une erreur 404 avec un message explicatif.
+
+US3 - Créer une nouvelle commande (POST /orders)
+En tant qu'utilisateur,
+Je veux créer une nouvelle commande,
+Afin d'enregistrer une transaction commerciale.
+
+Critères d'acceptation:
+- Une requête valide contient les informations de la commande (nom du client, montant total, statut).
+- Le système crée une nouvelle commande et la stocke dans la base de données.
+- La date de la commande est automatiquement définie à la date actuelle.
+- Si les données saisies sont invalides (champs requis manquants), le système renvoie une erreur 400 avec un retour sur la validation.
+- Après la création, le système répond avec les détails de la nouvelle commande créée.
