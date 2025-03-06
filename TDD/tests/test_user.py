@@ -1,7 +1,8 @@
 import unittest
 from app import create_app
 from models.database import db
-from models.user import User
+from models.order import Order
+from datetime import datetime
 
 class UserTestCase(unittest.TestCase):
     def setUp(self):
@@ -18,34 +19,43 @@ class UserTestCase(unittest.TestCase):
             db.session.remove()
             db.drop_all()
 
-    def test_create_user(self):
-        response = self.client.post("/api/users", json={"name": "John Doe", "email": "john@example.com"})
-        self.assertEqual(response.status_code, 201)
-        self.assertIn("John Doe", str(response.data))
-
-    def test_get_users(self):
-        self.client.post("/api/users", json={"name": "John Doe", "email": "john@example.com"})
-        response = self.client.get("/api/users")
+    def test_get_orders_empty(self):
+        """Test retrieving orders when the database is empty"""
+        response = self.client.get("/api/orders")
         self.assertEqual(response.status_code, 200)
-        self.assertIn("John Doe", str(response.data))
+        self.assertEqual(response.json, [])
 
-    def test_get_user(self):
-        self.client.post("/api/users", json={"name": "John Doe", "email": "john@example.com"})
-        response = self.client.get("/api/users/1")
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("John Doe", str(response.data))
+    def test_get_orders(self):
+        """Test retrieving orders with data in the database"""
+        with self.app.app_context():
+            order1 = Order(
+                customer_name="John Doe",
+                order_date=datetime(2025, 2, 1),
+                total_amount=99.99,
+                status="completed"
+            )
+            order2 = Order(
+                customer_name="Jane Smith",
+                order_date=datetime(2025, 2, 15),
+                total_amount=149.99,
+                status="pending"
+            )
+            db.session.add(order1)
+            db.session.add(order2)
+            db.session.commit()
 
-    def test_update_user(self):
-        self.client.post("/api/users", json={"name": "John Doe", "email": "john@example.com"})
-        response = self.client.put("/api/users/1", json={"name": "Jane Doe"})
+        response = self.client.get("/api/orders")
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Jane Doe", str(response.data))
-
-    def test_delete_user(self):
-        self.client.post("/api/users", json={"name": "John Doe", "email": "john@example.com"})
-        response = self.client.delete("/api/users/1")
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("User deleted successfully", str(response.data))
+        
+        self.assertEqual(len(response.json), 2)
+        
+        self.assertEqual(response.json[0]["customer_name"], "John Doe")
+        self.assertEqual(response.json[0]["total_amount"], 99.99)
+        self.assertEqual(response.json[0]["status"], "completed")
+        
+        self.assertEqual(response.json[1]["customer_name"], "Jane Smith")
+        self.assertEqual(response.json[1]["total_amount"], 149.99)
+        self.assertEqual(response.json[1]["status"], "pending")
 
 if __name__ == "__main__":
     unittest.main()
