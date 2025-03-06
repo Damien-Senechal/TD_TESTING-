@@ -41,3 +41,14 @@ Critères d'acceptation:
 - Si l'ID de la commande n'existe pas, le système renvoie une erreur 404.
 - Si les données saisies sont invalides, le système renvoie une erreur 400 avec un retour sur la validation.
 - Les détails mis à jour de la commande sont reflétés dans la base de données.
+
+US5 - Supprimer une commande (DELETE /orders/:id)
+En tant qu'utilisateur,
+Je veux supprimer une commande du système,
+Afin de retirer les commandes erronées ou annulées de la base de données.
+
+Critères d'acceptation:
+- Le système supprime la commande associée à l'ID fourni.
+- Si l'ID de la commande n'existe pas, le système renvoie une erreur 404.
+- Si la suppression est réussie, le système répond avec un message de confirmation.
+- La commande supprimée n'est plus récupérable dans la base de données.
