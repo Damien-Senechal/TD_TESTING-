@@ -122,6 +122,46 @@ class OrderTestCase(unittest.TestCase):
         response = self.client.post("/api/orders", json=order_data)
         self.assertEqual(response.status_code, 400)
         self.assertIn("error", response.json)
+        
+    def test_update_order_valid(self):
+        """Test updating an order with valid data"""
+        with self.app.app_context():
+            order = Order(
+                customer_name="Original Customer",
+                order_date=datetime(2025, 3, 1),
+                total_amount=100.00,
+                status="pending"
+            )
+            db.session.add(order)
+            db.session.commit()
+            order_id = order.id
+        
+        update_data = {
+            "customer_name": "Updated Customer",
+            "status": "shipped"
+        }
+        response = self.client.put(f"/api/orders/{order_id}", json=update_data)
+        self.assertEqual(response.status_code, 200)
+        
+        self.assertEqual(response.json["customer_name"], "Updated Customer")
+        self.assertEqual(response.json["status"], "shipped")
+        self.assertEqual(response.json["total_amount"], 100.00)
+        
+        with self.app.app_context():
+            updated_order = Order.query.get(order_id)
+            self.assertEqual(updated_order.customer_name, "Updated Customer")
+            self.assertEqual(updated_order.status, "shipped")
+            self.assertEqual(updated_order.total_amount, 100.00)
+    
+    def test_update_order_not_found(self):
+        """Test updating an order that doesn't exist"""
+        update_data = {
+            "customer_name": "Updated Nonexistent Order",
+            "status": "cancelled"
+        }
+        response = self.client.put("/api/orders/999", json=update_data)
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("error", response.json)
 
 if __name__ == "__main__":
     unittest.main()
