@@ -86,3 +86,52 @@ def create_order():
     db.session.commit()
     
     return jsonify(new_order.to_dict()), 201
+
+@order_routes.route("/orders/<int:order_id>", methods=["PUT"])
+def update_order(order_id):
+    """
+    Update an order by ID
+    ---
+    parameters:
+      - name: order_id
+        in: path
+        type: integer
+        required: true
+        description: ID of the order to update
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            customer_name:
+              type: string
+            total_amount:
+              type: number
+            status:
+              type: string
+              enum: [pending, processing, shipped, delivered, cancelled]
+    responses:
+      200:
+        description: Order updated successfully
+      404:
+        description: Order not found
+      400:
+        description: Invalid input
+    """
+    order = Order.query.get(order_id)
+    if not order:
+        return jsonify({"error": "Order not found"}), 404
+
+    data = request.get_json()
+    
+    if "customer_name" in data:
+        order.customer_name = data["customer_name"]
+    if "total_amount" in data:
+        order.total_amount = float(data["total_amount"])
+    if "status" in data:
+        order.status = data["status"]
+    
+    db.session.commit()
+    
+    return jsonify(order.to_dict()), 200
