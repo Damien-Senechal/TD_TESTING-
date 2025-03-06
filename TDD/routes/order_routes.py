@@ -69,12 +69,14 @@ def create_order():
     """
     data = request.get_json()
     
+    # Validate required fields
     if not data.get("customer_name"):
         return jsonify({"error": "Customer name is required"}), 400
     
     if not data.get("total_amount") and data.get("total_amount") != 0:
         return jsonify({"error": "Total amount is required"}), 400
     
+    # Create new order
     new_order = Order(
         customer_name=data["customer_name"],
         order_date=datetime.utcnow(),
@@ -82,6 +84,7 @@ def create_order():
         status=data.get("status", "pending")
     )
     
+    # Save to database
     db.session.add(new_order)
     db.session.commit()
     
@@ -125,6 +128,7 @@ def update_order(order_id):
 
     data = request.get_json()
     
+    # Update order fields if provided
     if "customer_name" in data:
         order.customer_name = data["customer_name"]
     if "total_amount" in data:
@@ -132,6 +136,34 @@ def update_order(order_id):
     if "status" in data:
         order.status = data["status"]
     
+    # Save to database
     db.session.commit()
     
     return jsonify(order.to_dict()), 200
+
+@order_routes.route("/orders/<int:order_id>", methods=["DELETE"])
+def delete_order(order_id):
+    """
+    Delete an order by ID
+    ---
+    parameters:
+      - name: order_id
+        in: path
+        type: integer
+        required: true
+        description: ID of the order to delete
+    responses:
+      200:
+        description: Order deleted successfully
+      404:
+        description: Order not found
+    """
+    order = Order.query.get(order_id)
+    if not order:
+        return jsonify({"error": "Order not found"}), 404
+
+    # Delete from database
+    db.session.delete(order)
+    db.session.commit()
+    
+    return jsonify({"message": "Order deleted successfully"}), 200
