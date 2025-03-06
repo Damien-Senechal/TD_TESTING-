@@ -7,3 +7,13 @@ Critères d'acceptation:
 - Le système récupère une liste de toutes les commandes depuis la base de données.
 - La réponse inclut les détails essentiels des commandes (ID, date, montant total, statut).
 - S'il n'y a pas de commandes, le système renvoie une liste vide.
+
+US2 - Récupérer une commande par ID (GET /orders/:id)
+En tant qu'utilisateur,
+Je veux consulter les détails d'une commande spécifique,
+Afin de pouvoir suivre son statut et ses informations.
+
+Critères d'acceptation:
+- Le système récupère les détails d'une commande sur la base de l'ID fourni.
+- La réponse inclut tous les détails de la commande (ID, date, montant total, statut, client).
+- Si l'ID de la commande n'existe pas, le système renvoie une erreur 404 avec un message explicatif.
