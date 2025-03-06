@@ -27,6 +27,7 @@ class OrderTestCase(unittest.TestCase):
 
     def test_get_orders(self):
         """Test retrieving orders with data in the database"""
+        # Add some orders to the database
         with self.app.app_context():
             order1 = Order(
                 customer_name="John Doe",
@@ -44,21 +45,26 @@ class OrderTestCase(unittest.TestCase):
             db.session.add(order2)
             db.session.commit()
 
+        # Retrieve all orders
         response = self.client.get("/api/orders")
         self.assertEqual(response.status_code, 200)
         
+        # Verify response contains the added orders
         self.assertEqual(len(response.json), 2)
         
+        # Verify first order
         self.assertEqual(response.json[0]["customer_name"], "John Doe")
         self.assertEqual(response.json[0]["total_amount"], 99.99)
         self.assertEqual(response.json[0]["status"], "completed")
         
+        # Verify second order
         self.assertEqual(response.json[1]["customer_name"], "Jane Smith")
         self.assertEqual(response.json[1]["total_amount"], 149.99)
         self.assertEqual(response.json[1]["status"], "pending")
         
     def test_get_order_by_id(self):
         """Test retrieving a single order by ID"""
+        # Add an order to the database
         with self.app.app_context():
             order = Order(
                 customer_name="Test Customer",
@@ -70,9 +76,11 @@ class OrderTestCase(unittest.TestCase):
             db.session.commit()
             order_id = order.id
 
+        # Retrieve the order by ID
         response = self.client.get(f"/api/orders/{order_id}")
         self.assertEqual(response.status_code, 200)
         
+        # Verify response contains the correct order
         self.assertEqual(response.json["id"], order_id)
         self.assertEqual(response.json["customer_name"], "Test Customer")
         self.assertEqual(response.json["total_amount"], 125.50)
@@ -95,11 +103,13 @@ class OrderTestCase(unittest.TestCase):
         response = self.client.post("/api/orders", json=order_data)
         self.assertEqual(response.status_code, 201)
         
+        # Verify response contains the created order
         self.assertEqual(response.json["customer_name"], "New Customer")
         self.assertEqual(response.json["total_amount"], 199.99)
         self.assertEqual(response.json["status"], "pending")
         self.assertIn("order_date", response.json)
         
+        # Verify order was added to the database
         with self.app.app_context():
             order = Order.query.filter_by(customer_name="New Customer").first()
             self.assertIsNotNone(order)
@@ -107,6 +117,7 @@ class OrderTestCase(unittest.TestCase):
             
     def test_create_order_missing_fields(self):
         """Test creating an order with missing required fields"""
+        # Missing customer_name
         order_data = {
             "total_amount": 199.99,
             "status": "pending"
@@ -115,6 +126,7 @@ class OrderTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("error", response.json)
         
+        # Missing total_amount
         order_data = {
             "customer_name": "Missing Amount Customer",
             "status": "pending"
@@ -125,6 +137,7 @@ class OrderTestCase(unittest.TestCase):
         
     def test_update_order_valid(self):
         """Test updating an order with valid data"""
+        # First, add an order to the database
         with self.app.app_context():
             order = Order(
                 customer_name="Original Customer",
@@ -136,6 +149,7 @@ class OrderTestCase(unittest.TestCase):
             db.session.commit()
             order_id = order.id
         
+        # Update the order
         update_data = {
             "customer_name": "Updated Customer",
             "status": "shipped"
@@ -143,10 +157,13 @@ class OrderTestCase(unittest.TestCase):
         response = self.client.put(f"/api/orders/{order_id}", json=update_data)
         self.assertEqual(response.status_code, 200)
         
+        # Verify response contains updated data
         self.assertEqual(response.json["customer_name"], "Updated Customer")
         self.assertEqual(response.json["status"], "shipped")
+        # Total amount should remain unchanged
         self.assertEqual(response.json["total_amount"], 100.00)
         
+        # Verify order was updated in the database
         with self.app.app_context():
             updated_order = Order.query.get(order_id)
             self.assertEqual(updated_order.customer_name, "Updated Customer")
@@ -160,6 +177,39 @@ class OrderTestCase(unittest.TestCase):
             "status": "cancelled"
         }
         response = self.client.put("/api/orders/999", json=update_data)
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("error", response.json)
+        
+    def test_delete_order_valid(self):
+        """Test deleting an order that exists"""
+        # First, add an order to the database
+        with self.app.app_context():
+            order = Order(
+                customer_name="Customer to Delete",
+                order_date=datetime(2025, 3, 5),
+                total_amount=75.50,
+                status="pending"
+            )
+            db.session.add(order)
+            db.session.commit()
+            order_id = order.id
+        
+        # Delete the order
+        response = self.client.delete(f"/api/orders/{order_id}")
+        self.assertEqual(response.status_code, 200)
+        
+        # Verify response contains confirmation message
+        self.assertIn("message", response.json)
+        self.assertIn("deleted", response.json["message"].lower())
+        
+        # Verify order was deleted from the database
+        with self.app.app_context():
+            deleted_order = Order.query.get(order_id)
+            self.assertIsNone(deleted_order)
+    
+    def test_delete_order_not_found(self):
+        """Test deleting an order that doesn't exist"""
+        response = self.client.delete("/api/orders/999")
         self.assertEqual(response.status_code, 404)
         self.assertIn("error", response.json)
 
